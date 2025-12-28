@@ -3,7 +3,7 @@ project(softmax_cuda LANGUAGES CXX CUDA)
 
 enable_language(CUDA)
 
-set(target_suffix Kozhevatov CACHE STRING "Suffix appended to the softmax_cuda executable name")
+set(target_suffix Kozhevatov)
 set(target_name "softmax_cuda_${target_suffix}")
 
 add_executable(${target_name} main.cu)
