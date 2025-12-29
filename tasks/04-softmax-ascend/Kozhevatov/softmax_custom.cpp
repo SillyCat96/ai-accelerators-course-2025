@@ -124,7 +124,7 @@ class KernelSoftmax {
       // ПЕРВЫЙ ПРОХОД: вычисление суммы экспонент по строке
       for (uint32_t i = 0; i < TILE_NUM * BUFFER_NUM; i++) {
         CopyIn(i, row_offset);  // Копирование тайла
-        ComputeSum(i);          // Добавление экспоненты к сумме
+        ComputeSum(i);  // Добавление экспоненты к сумме
       }
 
       // Редукция: получение итоговой суммы по строке
@@ -139,7 +139,7 @@ class KernelSoftmax {
 
       // ВТОРОЙ ПРОХОД: вычисление нормализованных значений
       for (uint32_t i = 0; i < TILE_NUM * BUFFER_NUM; i++) {
-        CopyIn(i, row_offset);   // Повторное копирование (данные те же)
+        CopyIn(i, row_offset);  // Повторное копирование (данные те же)
         ComputeSoftmax(i);       // Вычисление exp(x)/sum
         CopyOut(i, row_offset);  // Запись результата
       }
@@ -202,7 +202,7 @@ class KernelSoftmax {
     AscendC::Div(zLocal, xLocal, tmpCalc, TILE_LENGTH);  // exp(x)/sum
 
     outQueueZ.EnQue<float>(zLocal);  // Результат для копирования
-    inQueueX.FreeTensor(xLocal);     // Освобождение входных данных
+    inQueueX.FreeTensor(xLocal);  // Освобождение входных данных
   }
 
   /**
@@ -225,7 +225,7 @@ class KernelSoftmax {
   AscendC::TQue<AscendC::TPosition::VECOUT, BUFFER_NUM>
       outQueueZ;  ///< Выходная очередь с двойной буферизацией
   AscendC::TBuf<AscendC::TPosition::VECCALC> tmpBuf,
-      tmpBufCalc;                    ///< Временные буферы для вычислений
+      tmpBufCalc;  ///< Временные буферы для вычислений
   AscendC::GlobalTensor<float> xGm;  ///< Глобальный тензор входных данных
   AscendC::GlobalTensor<float> zGm;  ///< Глобальный тензор выходных данных
   AscendC::LocalTensor<float>
