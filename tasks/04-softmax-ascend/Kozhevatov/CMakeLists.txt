@@ -15,8 +15,9 @@ endif()
 
 # ${KERNEL_FILES} are used to compile library, push files written by ascendc in ${KERNEL_FILES}.
 # ref to cmake/npu.cmake ascendc_library, cmake/cpu.cmake add_library
-file(GLOB KERNEL_FILES ${CMAKE_CURRENT_SOURCE_DIR}/add_custom.cpp)
+file(GLOB KERNEL_FILES ${CMAKE_CURRENT_SOURCE_DIR}/softmax_custom.cpp)
 
+message(STATUS "RUN_MODE: ${RUN_MODE}")
 if("${RUN_MODE}" STREQUAL "cpu")
     include(cmake/cpu_lib.cmake)
 elseif("${RUN_MODE}" STREQUAL "sim" OR "${RUN_MODE}" STREQUAL "npu")
