@@ -1,19 +1,11 @@
 #!/usr/bin/python3
 # coding=utf-8
-#
-# Copyright (C) 2023-2024. Huawei Technologies Co., Ltd. All rights reserved.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-# ===============================================================================
-
-#!/usr/bin/python3
-# coding=utf-8
 import numpy as np
 import os
 
-TOTAL_SIZE = 16384  # 8 * 2048
+NUM_CORES = 8
+BLOCK_SIZE = 2048 
+TOTAL_SIZE = NUM_CORES * BLOCK_SIZE
 
 def gen_golden_data_simple():
     # Создаем папки, если их нет
@@ -25,13 +17,13 @@ def gen_golden_data_simple():
     
     # Вычисляем softmax по блокам (как делает ядро)
     golden = np.zeros_like(input_data)
-    for i in range(0, TOTAL_SIZE, 2048):
-        block = input_data[i:i+2048]
-        # Стабильный softmax для python (вычитаем max)
+    for core in range(NUM_CORES):
+        offset = core * BLOCK_SIZE
+        block = input_data[offset : offset + BLOCK_SIZE]
+        
         max_val = np.max(block)
         exp_block = np.exp(block - max_val)
-        sum_exp = np.sum(exp_block)
-        golden[i:i+2048] = exp_block / sum_exp
+        golden[offset : offset + BLOCK_SIZE] = exp_block / np.sum(exp_block)
     
     # Сохраняем файлы
     input_data.tofile("./input/softmax_input.bin")
